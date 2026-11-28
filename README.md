@@ -62,4 +62,15 @@ python -m pip install -r requirements.txt
 python -m pytest -q
 ```
 
-Test bao phu dat thanh cong, het ton va xu ly message lap lai. Docker Compose la cach chay day du ca PostgreSQL va RabbitMQ.
+Test bao phu dat thanh cong, het ton, chuyen trang thai, du lieu can du va xu ly message lap lai.
+
+## Tieu chi nghiep vu da dam bao
+
+- Khong cho muon khi sach het ban.
+- Xu ly trung message khong giam ton kho hai lan.
+- Chi cho phep chuyen `Reserved` sang `Borrowed` va `Borrowed` sang `Returned`.
+- Tra sach tu dong tang lai so ban kha dung.
+- Khong them sach hoac nguoi dung khi ISBN/email da ton tai.
+- Xac thuc gia tri dau vao sach va nguoi dung.
+
+Docker Compose la cach chay day du ca PostgreSQL va RabbitMQ.

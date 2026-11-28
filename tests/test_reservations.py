@@ -85,3 +85,47 @@ def test_borrow_and_return_transition_restore_inventory():
         reservation = session.get(Reservation, reservation_id)
         book = session.get(Book, reservation.book_id)
         assert book.available_copies == 1
+
+
+def test_invalid_reservation_transitions_are_rejected():
+    from app.services import InvalidReservationTransition, borrow_reservation, return_reservation
+
+    session_factory = make_session_factory()
+    reservation_id = seed_reservation(session_factory, copies=1)
+
+    with session_factory() as session:
+        try:
+            borrow_reservation(session, reservation_id)
+        except InvalidReservationTransition:
+            pass
+        else:
+            raise AssertionError("Pending reservation cannot be borrowed")
+
+    with session_factory() as session:
+        process_reservation(session, reservation_id)
+
+    with session_factory() as session:
+        borrow_reservation(session, reservation_id)
+
+    with session_factory() as session:
+        try:
+            borrow_reservation(session, reservation_id)
+        except InvalidReservationTransition:
+            pass
+        else:
+            raise AssertionError("Borrowed reservation cannot be borrowed twice")
+
+
+def test_return_from_pending_or_reserved_is_rejected():
+    from app.services import InvalidReservationTransition, return_reservation
+
+    session_factory = make_session_factory()
+    reservation_id = seed_reservation(session_factory, copies=1)
+
+    with session_factory() as session:
+        try:
+            return_reservation(session, reservation_id)
+        except InvalidReservationTransition:
+            pass
+        else:
+            raise AssertionError("Pending reservation cannot be returned")

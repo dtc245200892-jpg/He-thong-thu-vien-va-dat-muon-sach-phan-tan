@@ -38,6 +38,12 @@ class Book(Base):
 
 class Reservation(Base):
     __tablename__ = "reservations"
+    __table_args__ = (
+        CheckConstraint(
+            "status IN ('Pending', 'Reserved', 'Rejected', 'Borrowed', 'Returned')",
+            name="ck_reservations_status",
+        ),
+    )
 
     id: Mapped[int] = mapped_column(primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
